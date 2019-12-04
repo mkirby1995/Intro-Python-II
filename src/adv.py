@@ -7,7 +7,7 @@ room = {
                      "North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", items = ['bone', 'torch']),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
@@ -44,22 +44,44 @@ player_room = room[player_1.room]
 
 while run == True:
 
-    room_name = player_room.name
-    room_desc = player_room.description
+    try:
+        room_name = player_room.name
+        room_desc = player_room.description
+        items = player_room.items
+    except AttributeError:
+        print('Woah there cowboy, try again')
+        player_room = room[player_1.room]
 
-    print(room_name, room_desc)
+    print(room_name, room_desc, items)
     cmd = input()
 
-    if cmd == 'n':
+    if len(cmd.split( )) > 1:
+        action = cmd.split( )[0]
+        item = cmd.split( )[1]
+    else:
+        action = cmd
+
+    if action == 'n':
         player_room = player_room.n_to
-    elif cmd == 's':
+    elif action == 's':
         player_room = player_room.s_to
-    elif cmd == 'e':
+    elif action == 'e':
         player_room = player_room.e_to
-    elif cmd == 'w':
+    elif action == 'w':
         player_room = player_room.w_to
-    elif cmd == 'q':
+    elif action == 'q':
         run = False
+        print("Bye")
+    elif action == 'i':
+        print(player_1.items)
+
+    if action == 'get':
+        items = player_1.get_item(item, items)
+        print("Picked up", player_1.items[-1])
+    elif action == 'drop':
+        items = player_1.drop_item(item, items)
+        print("Dropped", items[-1])
+
     else:
         print("Not a valid choice")
 # Write a loop that:
